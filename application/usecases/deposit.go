@@ -42,7 +42,7 @@ func (t *depositUsecase) Execute(input DepositInput) error {
 
 	logger.Log().Info(string(eventProto))
 
-	t.kafka.DepositEmmiter(t.kafka.DepositsTopic, input.WalletID, string(eventProto))
+	t.kafka.DepositEmmiter(t.kafka.DepositsTopic, input.WalletID, eventProto)
 
 	logger.Log().Info(fmt.Sprintf("Deposit to %s with amount %f", input.WalletID, input.Amount))
 	return nil

@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"time"
 
-	messaging "github.com/lovoo/goka/examples/3-messaging"
+	pb "github.com/kmaguswira/coinbit/proto"
+	"google.golang.org/protobuf/proto"
 )
 
 type Wallet struct {
@@ -14,14 +15,14 @@ type Wallet struct {
 }
 
 type DepositAmount struct {
-	Value     float64
+	Amount    float64
 	Timestamp time.Time
 }
 
 func (t *Wallet) GetTotal() float64 {
 	total := float64(0)
-	for _, amount := range t.DepositAmount {
-		total += amount.Value
+	for _, deposit := range t.DepositAmount {
+		total += deposit.Amount
 	}
 
 	return total
@@ -33,9 +34,9 @@ func (t *Wallet) IsAboveThreshold() {
 		lastDeposit := t.DepositAmount[len(t.DepositAmount)-1]
 		startTime := lastDeposit.Timestamp.Add(-2 * time.Minute)
 
-		for _, DepositAmount := range t.DepositAmount {
-			if DepositAmount.Timestamp.After(startTime) {
-				total += DepositAmount.Value
+		for _, deposit := range t.DepositAmount {
+			if deposit.Timestamp.After(startTime) {
+				total += deposit.Amount
 			}
 		}
 
@@ -49,21 +50,23 @@ func (t *Wallet) IsAboveThreshold() {
 }
 
 func (t *Wallet) Encode(value interface{}) ([]byte, error) {
-	return json.Marshal(value)
+	wallets := value.([]pb.Wallet)
+	return json.Marshal(&wallets)
 }
 
 func (t *Wallet) Decode(data []byte) (interface{}, error) {
-	var m []messaging.Message
-	err := json.Unmarshal(data, &m)
-	return m, err
+	var event []pb.Wallet
+	err := json.Unmarshal(data, &event)
+	return event, err
 }
 
 func (t *DepositAmount) Encode(value interface{}) ([]byte, error) {
-	return json.Marshal(value)
+	depositAmount := value.(pb.DepositAmount)
+	return proto.Marshal(&depositAmount)
 }
 
 func (t *DepositAmount) Decode(data []byte) (interface{}, error) {
-	var m []messaging.Message
-	err := json.Unmarshal(data, &m)
-	return m, err
+	event := &pb.DepositAmount{}
+	err := proto.Unmarshal(data, event)
+	return event, err
 }

@@ -72,7 +72,7 @@ func (t *KafkaClient) createTopicManager() goka.TopicManager {
 	return tm
 }
 
-func (t *KafkaClient) DepositEmmiter(topic goka.Stream, key string, value string) {
+func (t *KafkaClient) DepositEmmiter(topic goka.Stream, key string, value interface{}) {
 	if err := t.depositEmitter.EmitSync(key, value); err != nil {
 		logger.Log().Error(err)
 	}

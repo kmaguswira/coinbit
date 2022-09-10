@@ -8,8 +8,11 @@ import (
 	"syscall"
 	"time"
 
+	pb "github.com/kmaguswira/coinbit/proto"
 	"github.com/lovoo/goka"
 	"github.com/lovoo/goka/codec"
+	"github.com/lovoo/goka/storage"
+	"google.golang.org/protobuf/proto"
 )
 
 var (
@@ -47,10 +50,21 @@ func runProcessor() {
 			counter = val.(int64)
 		}
 		counter++
+
+		event := &pb.DepositAmount{}
+		stringMsg, _ := msg.(string)
+		// fmt.Println(err)
+
+		if err := proto.Unmarshal([]byte(stringMsg), event); err != nil {
+			log.Fatalln("Failed to parse address book:", err)
+		}
 		// SetValue stores the incremented counter in the group table for in
 		// the message's key.
+
+		local := storage.New()
+
 		ctx.SetValue(counter)
-		log.Printf("key = %s, counter = %v, msg = %v", ctx.Key(), counter, msg)
+		log.Printf("key = %s, counter = %v, msg = %v", ctx.Key(), counter, event)
 	}
 
 	// Define a new processor group. The group defines all inputs, outputs, and
