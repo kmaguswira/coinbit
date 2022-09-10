@@ -36,7 +36,7 @@ func main() {
 	case <-ctx.Done():
 	}
 
-	kafka.GetClient().CleanUp()
+	kafka.KafkaClient.CleanUp()
 	cancel()
 
 	if err := grp.Wait(); err != nil {

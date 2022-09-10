@@ -13,7 +13,12 @@ func main() {
 	logger.Init()
 	redis.InitRedis()
 	kafka.InitKafka()
+
+	kafkaClient := kafka.KafkaClient
+	kafkaClient.InitBalanceView()
+	kafkaClient.InitAboveThresholdView()
+
 	server.Init()
 
-	defer kafka.GetClient().CleanUp()
+	defer kafkaClient.CleanUp()
 }

@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"time"
 
+	iface "github.com/kmaguswira/coinbit/application/external_services"
 	"github.com/kmaguswira/coinbit/domain"
 	"github.com/kmaguswira/coinbit/infrastructure/external_services/kafka"
 	"github.com/kmaguswira/coinbit/utils/logger"
 )
 
 type EmitDepositInput struct {
-	WalletID string  `json:"walletId"`
+	WalletID string  `json:"wallet_id"`
 	Amount   float64 `json:"amount"`
 }
 
@@ -19,12 +20,12 @@ type IEmitDeposit interface {
 }
 
 type emitDepositUsecase struct {
-	kafka *kafka.KafkaClient
+	kafka iface.IKafka
 }
 
 func NewEmitDepositUsecase() IEmitDeposit {
 	return &emitDepositUsecase{
-		kafka: kafka.GetClient(),
+		kafka: kafka.KafkaClient,
 	}
 }
 
@@ -34,12 +35,7 @@ func (t *emitDepositUsecase) Execute(input EmitDepositInput) error {
 		Timestamp: time.Now(),
 	}
 
-	eventProto, err := event.Encode(event)
-	if err != nil {
-		logger.Log().Error(err)
-	}
-
-	t.kafka.DepositEmmiter(t.kafka.DepositsTopic, input.WalletID, string(eventProto))
+	t.kafka.DepositEmmiter(input.WalletID, event)
 
 	logger.Log().Info(fmt.Sprintf("Deposit to %s with amount %f", input.WalletID, input.Amount))
 	return nil

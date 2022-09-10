@@ -36,11 +36,8 @@ func (t coinbitController) Deposit(c *gin.Context) {
 }
 
 func (t coinbitController) GetBalance(c *gin.Context) {
-	getBalanceInput := usecases.GetBalanceInput{}
-
-	if err := c.BindJSON(&getBalanceInput); err != nil {
-		c.Error(err)
-		return
+	getBalanceInput := usecases.GetBalanceInput{
+		WalletID: c.Param("id"),
 	}
 
 	balance, err := t.getBalanceUsecase.Execute(getBalanceInput)
