@@ -14,6 +14,7 @@ type KafkaClient struct {
 	AboveThresholdGroup goka.Group
 	BalanceTable        goka.Table
 	AboveThresholdTable goka.Table
+	depositEmitter      *goka.Emitter
 }
 
 var client *KafkaClient
@@ -30,10 +31,20 @@ func InitKafka() {
 	client.AboveThresholdTable = goka.GroupTable(client.AboveThresholdGroup)
 
 	client.ensureStreamExists(config.GetConfig().KafkaDepositsTopic)
+
+	var err error
+	client.depositEmitter, err = goka.NewEmitter(client.Brokers, client.DepositsTopic, new(codec.String))
+	if err != nil {
+		logger.Log().Error(err)
+	}
 }
 
 func GetClient() *KafkaClient {
 	return client
+}
+
+func (t *KafkaClient) CleanUp() {
+	t.depositEmitter.Finish()
 }
 
 func (t *KafkaClient) ensureStreamExists(topic string) {
@@ -61,14 +72,8 @@ func (t *KafkaClient) createTopicManager() goka.TopicManager {
 	return tm
 }
 
-func (t *KafkaClient) DepositEmmiter(topic goka.Stream, key string, value interface{}) {
-	emitter, err := goka.NewEmitter(t.Brokers, topic, new(codec.String))
-	if err != nil {
+func (t *KafkaClient) DepositEmmiter(topic goka.Stream, key string, value string) {
+	if err := t.depositEmitter.EmitSync(key, value); err != nil {
 		logger.Log().Error(err)
 	}
-
-	if err := emitter.EmitSync(key, value); err != nil {
-		logger.Log().Error(err)
-	}
-
 }

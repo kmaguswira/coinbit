@@ -3,3 +3,5 @@
 - redis
 - cp env.example.yaml env.yaml
 - make run-api
+- installation guide protoc `https://grpc.io/docs/protoc-installation/`
+- install go-protoc `go install google.golang.org/protobuf/cmd/protoc-gen-go@latest`

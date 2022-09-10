@@ -1,0 +1,15 @@
+syntax = "proto3";
+package proto;
+
+option go_package = "./proto";
+
+message DepositAmount {
+	double amount = 1;
+	int64 timestamp = 2;
+}
+
+message Wallet {
+	string walletID = 1;
+	repeated DepositAmount DepositAmount = 2;
+	bool aboveThreshold = 3;
+}

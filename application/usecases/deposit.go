@@ -2,13 +2,16 @@ package usecases
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/kmaguswira/coinbit/infrastructure/external_services/kafka"
+	pb "github.com/kmaguswira/coinbit/proto"
 	"github.com/kmaguswira/coinbit/utils/logger"
+	"google.golang.org/protobuf/proto"
 )
 
 type DepositInput struct {
-	WalletID int     `json:"walletId"`
+	WalletID string  `json:"walletId"`
 	Amount   float64 `json:"amount"`
 }
 
@@ -27,7 +30,20 @@ func NewDepositUsecase() IDeposit {
 }
 
 func (t *depositUsecase) Execute(input DepositInput) error {
-	t.kafka.DepositEmmiter(t.kafka.DepositsTopic, fmt.Sprintf("%d", input.WalletID), fmt.Sprintf("%f", input.Amount))
-	logger.Log().Info(fmt.Sprintf("Deposit to %d with amount %f", input.WalletID, input.Amount))
+	event := pb.DepositAmount{
+		Amount:    input.Amount,
+		Timestamp: time.Now().UnixMilli(),
+	}
+
+	eventProto, err := proto.Marshal(&event)
+	if err != nil {
+		logger.Log().Error(err)
+	}
+
+	logger.Log().Info(string(eventProto))
+
+	t.kafka.DepositEmmiter(t.kafka.DepositsTopic, input.WalletID, string(eventProto))
+
+	logger.Log().Info(fmt.Sprintf("Deposit to %s with amount %f", input.WalletID, input.Amount))
 	return nil
 }

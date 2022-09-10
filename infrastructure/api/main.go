@@ -14,4 +14,6 @@ func main() {
 	redis.InitRedis()
 	kafka.InitKafka()
 	server.Init()
+
+	defer kafka.GetClient().CleanUp()
 }
