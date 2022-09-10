@@ -5,14 +5,13 @@ import (
 )
 
 type ProcessAboveThresholdInput struct {
-	WalletID        string
-	Wallets         interface{}
-	AboveThresholds interface{}
-	Amount          interface{}
+	WalletID string
+	Wallet   interface{}
+	Amount   interface{}
 }
 
 type IProcessAboveThreshold interface {
-	Execute(input ProcessAboveThresholdInput) *[]domain.AboveThreshold
+	Execute(input ProcessAboveThresholdInput) *domain.AboveThreshold
 }
 
 type processAboveThresholdUsecase struct{}
@@ -21,35 +20,20 @@ func NewProcessAboveThresholdUsecase() IProcessAboveThreshold {
 	return &processAboveThresholdUsecase{}
 }
 
-func (t *processAboveThresholdUsecase) Execute(input ProcessAboveThresholdInput) *[]domain.AboveThreshold {
-	// var aboveThresholds []domain.AboveThreshold
-	// if input.AboveThresholds != nil {
-	// 	aboveThresholds = input.AboveThresholds.([]domain.AboveThreshold)
-	// }
+func (t *processAboveThresholdUsecase) Execute(input ProcessAboveThresholdInput) *domain.AboveThreshold {
+	var wallet domain.Wallet
+	var amount domain.DepositAmount
 
-	// event := input.Amount.(domain.DepositAmount)
+	if input.Wallet != nil {
+		wallet = input.Wallet.(domain.Wallet)
+	}
 
-	// foundWallet := false
-	// for i := 0; i < len(wallets); i++ {
-	// 	if wallets[i].WalletID == input.WalletID {
-	// 		foundWallet = true
-	// 		wallets[i].Deposit(domain.DepositAmount{
-	// 			Amount:    event.Amount,
-	// 			Timestamp: event.Timestamp,
-	// 		})
-	// 	}
-	// }
+	amount = input.Amount.(domain.DepositAmount)
+	wallet.Deposit(amount)
 
-	// if !foundWallet {
-	// 	wallets = append(wallets, domain.Wallet{
-	// 		WalletID: input.WalletID,
-	// 		DepositAmount: []domain.DepositAmount{
-	// 			{
-	// 				Amount:    event.Amount,
-	// 				Timestamp: event.Timestamp,
-	// 			},
-	// 		},
-	// 	})
-	// }
-	return &[]domain.AboveThreshold{}
+	return &domain.AboveThreshold{
+		WalletID:       input.WalletID,
+		AboveThreshold: wallet.IsAboveThreshold(),
+	}
+
 }

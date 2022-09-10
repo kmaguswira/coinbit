@@ -30,25 +30,24 @@ func (t *Wallet) Deposit(amount DepositAmount) {
 	t.DepositAmount = append(t.DepositAmount, amount)
 }
 
-func (t *Wallet) IsAboveThreshold() {
-	// if len(t.DepositAmount) > 0 && !t.AboveThreshold {
-	// 	total := float64(0)
-	// 	lastDeposit := t.DepositAmount[len(t.DepositAmount)-1]
-	// 	startTime := lastDeposit.Timestamp.Add(-2 * time.Minute)
+func (t *Wallet) IsAboveThreshold() bool {
+	if len(t.DepositAmount) > 0 {
+		total := float64(0)
+		lastDeposit := t.DepositAmount[len(t.DepositAmount)-1]
+		startTime := lastDeposit.Timestamp.Add(-2 * time.Minute)
 
-	// 	for _, deposit := range t.DepositAmount {
-	// 		if deposit.Timestamp.After(startTime) {
-	// 			total += deposit.Amount
-	// 		}
-	// 	}
+		for _, deposit := range t.DepositAmount {
+			if deposit.Timestamp.After(startTime) {
+				total += deposit.Amount
+			}
+		}
 
-	// 	if total > 10000 {
-	// 		t.AboveThreshold = true
-	// 		return
-	// 	}
-	// }
+		if total > 10000 {
+			return true
+		}
+	}
 
-	// t.AboveThreshold = false
+	return false
 }
 
 func (t *Wallet) Encode(value interface{}) ([]byte, error) {

@@ -23,9 +23,9 @@ func main() {
 
 	logger.Log().Info("Starting collectors")
 	balanceHandler := handlers.NewBalanceHandler()
-	// aboveThresholdHandler := handlers.NewAboveThresholdHandler()
+	aboveThresholdHandler := handlers.NewAboveThresholdHandler()
 
-	// grp.Go(aboveThresholdHandler.Run(ctx))
+	grp.Go(aboveThresholdHandler.Run(ctx))
 	grp.Go(balanceHandler.Run(ctx))
 
 	waiter := make(chan os.Signal, 1)

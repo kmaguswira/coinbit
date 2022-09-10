@@ -1,9 +1,8 @@
 package domain
 
 import (
-	"encoding/json"
-
 	pb "github.com/kmaguswira/coinbit/proto"
+	"google.golang.org/protobuf/proto"
 )
 
 type AboveThreshold struct {
@@ -12,30 +11,23 @@ type AboveThreshold struct {
 }
 
 func (t *AboveThreshold) Encode(value interface{}) ([]byte, error) {
-	aboveThresholds := value.([]AboveThreshold)
-
-	aboveThresholdsProto := []pb.AboveThreshold{}
-	for _, wallet := range aboveThresholds {
-		aboveThresholdsProto = append(aboveThresholdsProto, pb.AboveThreshold{
-			WalletID:       wallet.WalletID,
-			AboveThreshold: wallet.AboveThreshold,
-		})
+	aboveThreshold := value.(AboveThreshold)
+	aboveThresholdProto := pb.AboveThreshold{
+		WalletID:       aboveThreshold.WalletID,
+		AboveThreshold: aboveThreshold.AboveThreshold,
 	}
 
-	return json.Marshal(&aboveThresholds)
+	return proto.Marshal(&aboveThresholdProto)
 }
 
 func (t *AboveThreshold) Decode(data []byte) (interface{}, error) {
-	var aboveThresholdsProto []pb.AboveThreshold
-	err := json.Unmarshal(data, &aboveThresholdsProto)
+	var aboveThresholdProto pb.AboveThreshold
+	err := proto.Unmarshal(data, &aboveThresholdProto)
 
-	aboveThresholds := []AboveThreshold{}
-	for _, aboveThreshold := range aboveThresholdsProto {
-		aboveThresholds = append(aboveThresholds, AboveThreshold{
-			WalletID:       aboveThreshold.WalletID,
-			AboveThreshold: aboveThreshold.AboveThreshold,
-		})
+	aboveThreshold := AboveThreshold{
+		WalletID:       aboveThresholdProto.WalletID,
+		AboveThreshold: aboveThresholdProto.AboveThreshold,
 	}
 
-	return aboveThresholds, err
+	return aboveThreshold, err
 }
