@@ -1,8 +1,13 @@
 package domain
 
-import "time"
+import (
+	"encoding/json"
+	"time"
 
-type Balance struct {
+	messaging "github.com/lovoo/goka/examples/3-messaging"
+)
+
+type Wallet struct {
 	WalletID       string
 	DepositAmount  []DepositAmount
 	AboveThreshold bool
@@ -13,7 +18,7 @@ type DepositAmount struct {
 	Timestamp time.Time
 }
 
-func (t *Balance) GetTotal() float64 {
+func (t *Wallet) GetTotal() float64 {
 	total := float64(0)
 	for _, amount := range t.DepositAmount {
 		total += amount.Value
@@ -22,7 +27,7 @@ func (t *Balance) GetTotal() float64 {
 	return total
 }
 
-func (t *Balance) IsAboveThreshold() {
+func (t *Wallet) IsAboveThreshold() {
 	if len(t.DepositAmount) > 0 && !t.AboveThreshold {
 		total := float64(0)
 		lastDeposit := t.DepositAmount[len(t.DepositAmount)-1]
@@ -41,4 +46,24 @@ func (t *Balance) IsAboveThreshold() {
 	}
 
 	t.AboveThreshold = false
+}
+
+func (t *Wallet) Encode(value interface{}) ([]byte, error) {
+	return json.Marshal(value)
+}
+
+func (t *Wallet) Decode(data []byte) (interface{}, error) {
+	var m []messaging.Message
+	err := json.Unmarshal(data, &m)
+	return m, err
+}
+
+func (t *DepositAmount) Encode(value interface{}) ([]byte, error) {
+	return json.Marshal(value)
+}
+
+func (t *DepositAmount) Decode(data []byte) (interface{}, error) {
+	var m []messaging.Message
+	err := json.Unmarshal(data, &m)
+	return m, err
 }
