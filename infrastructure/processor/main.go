@@ -22,9 +22,11 @@ func main() {
 	kafka.InitKafka()
 
 	logger.Log().Info("Starting collectors")
-	balanceHandlers := handlers.NewBalanceHandler()
+	balanceHandler := handlers.NewBalanceHandler()
+	// aboveThresholdHandler := handlers.NewAboveThresholdHandler()
 
-	grp.Go(balanceHandlers.Run(ctx))
+	// grp.Go(aboveThresholdHandler.Run(ctx))
+	grp.Go(balanceHandler.Run(ctx))
 
 	waiter := make(chan os.Signal, 1)
 	signal.Notify(waiter, syscall.SIGINT, syscall.SIGTERM)

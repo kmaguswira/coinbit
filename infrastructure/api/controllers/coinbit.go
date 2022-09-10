@@ -8,19 +8,19 @@ import (
 )
 
 type coinbitController struct {
-	depositUsecase    usecases.IDeposit
+	depositUsecase    usecases.IEmitDeposit
 	getBalanceUsecase usecases.IGetBalance
 }
 
 func NewCoinbitController() *coinbitController {
 	return &coinbitController{
-		depositUsecase:    usecases.NewDepositUsecase(),
+		depositUsecase:    usecases.NewEmitDepositUsecase(),
 		getBalanceUsecase: usecases.NewGetBalanceUsecase(),
 	}
 }
 
 func (t coinbitController) Deposit(c *gin.Context) {
-	depositInput := usecases.DepositInput{}
+	depositInput := usecases.EmitDepositInput{}
 
 	if err := c.BindJSON(&depositInput); err != nil {
 		c.Error(err)

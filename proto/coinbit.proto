@@ -11,5 +11,9 @@ message DepositAmount {
 message Wallet {
 	string walletID = 1;
 	repeated DepositAmount DepositAmount = 2;
-	bool aboveThreshold = 3;
+}
+
+message AboveThreshold {
+	string walletID = 1;
+	bool aboveThreshold = 2;
 }
