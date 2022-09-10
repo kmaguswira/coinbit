@@ -1,0 +1,5 @@
+- docker-compose up
+- create topic for deposits docker-compose exec kafka1 kafka-topics --create --bootstrap-server localhost:9092 --replication-factor 3 --partitions 1 --topic deposits
+- redis
+- cp env.example.yaml env.yaml
+- make run-api
