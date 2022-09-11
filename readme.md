@@ -67,6 +67,7 @@ There are 3 layers in this project:
 - third parties technologies stored here with interface implemented from application, it aims to make sure application running well even if we change the technologies.
 
 # Demo
+![demo-video](/doc/demo.mp4)
 <video width="640" height="360" controls>
   <source src="(/doc/demo.mp4" type="video/mp4">
 </video>
