@@ -179,3 +179,25 @@ func TestWalletIsAboveThreshold5Times2000In2MinutesAnd6000After5sec(t *testing.T
 		t.Errorf("should be true cause amount is greater than 10000 in time span 2 minutes")
 	}
 }
+
+func TestWalletIsAboveThreshold12000And1000After2Min5S(t *testing.T) {
+	wallet := Wallet{
+		WalletID: "1",
+		DepositAmount: []DepositAmount{
+			{
+				Amount:    12000,
+				Timestamp: time.Date(2022, 9, 10, 22, 0, 0, 0, time.UTC),
+			},
+			{
+				Amount:    1000,
+				Timestamp: time.Date(2022, 9, 10, 22, 2, 5, 0, time.UTC),
+			},
+		},
+	}
+
+	IsAboveThreshold := wallet.IsAboveThreshold()
+
+	if IsAboveThreshold != false {
+		t.Errorf("should be true cause amount is greater than 10000 in time span 2 minutes")
+	}
+}

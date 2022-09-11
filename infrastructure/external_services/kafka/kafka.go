@@ -42,7 +42,10 @@ func InitKafka() {
 		depositEmitter:      depositEmitter,
 	}
 
+	// create topic if not exists
 	KafkaClient.EnsureStreamExists(config.GetConfig().KafkaDepositsTopic)
+	KafkaClient.EnsureTableExists(fmt.Sprintf("%s-table", config.GetConfig().KafkaBalanceGroup))
+	KafkaClient.EnsureTableExists(fmt.Sprintf("%s-table", config.GetConfig().KafkaAboveThresholdGroup))
 }
 
 func (t *kafkaClient) GetBrokers() []string {

@@ -57,7 +57,7 @@ func (t *Wallet) Encode(value interface{}) ([]byte, error) {
 	for _, deposit := range wallet.DepositAmount {
 		depositAmountProto = append(depositAmountProto, &pb.DepositAmount{
 			Amount:    deposit.Amount,
-			Timestamp: deposit.Timestamp.UnixMilli(),
+			Timestamp: deposit.Timestamp.Unix(),
 		})
 	}
 
@@ -77,7 +77,7 @@ func (t *Wallet) Decode(data []byte) (interface{}, error) {
 	for _, deposit := range walletProto.DepositAmount {
 		depositAmount = append(depositAmount, DepositAmount{
 			Amount:    deposit.Amount,
-			Timestamp: time.Unix(deposit.Timestamp, int64(time.Second)),
+			Timestamp: time.Unix(deposit.Timestamp, int64(time.Millisecond)),
 		})
 	}
 

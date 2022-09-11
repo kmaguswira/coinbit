@@ -1,7 +1,10 @@
 package usecases
 
 import (
+	"fmt"
+
 	"github.com/kmaguswira/coinbit/domain"
+	"github.com/kmaguswira/coinbit/utils/logger"
 )
 
 type ProcessDepositInput struct {
@@ -21,6 +24,7 @@ func NewProcessDepositUsecase() IProcessDeposit {
 }
 
 func (t *processDepositUsecase) Execute(input ProcessDepositInput) *domain.Wallet {
+	logger.Log().Info(fmt.Sprintf("BalanceProcessor::receiving event %v with walletID %s", input.Amount, input.WalletID))
 	event := input.Amount.(domain.DepositAmount)
 
 	var wallet domain.Wallet
@@ -39,5 +43,6 @@ func (t *processDepositUsecase) Execute(input ProcessDepositInput) *domain.Walle
 		}
 	}
 
+	logger.Log().Info(fmt.Sprintf("BalanceProcessor::event %v with walletID %s processed", input.Amount, input.WalletID))
 	return &wallet
 }

@@ -17,10 +17,12 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	grp, ctx := errgroup.WithContext(ctx)
 
+	// initialize
 	config.Init()
 	logger.Init()
 	kafka.InitKafka()
 
+	// register handlers
 	logger.Log().Info("Starting collectors")
 	balanceHandler := handlers.NewBalanceHandler()
 	aboveThresholdHandler := handlers.NewAboveThresholdHandler()
@@ -28,6 +30,7 @@ func main() {
 	grp.Go(aboveThresholdHandler.Run(ctx))
 	grp.Go(balanceHandler.Run(ctx))
 
+	// wait until receive signal
 	waiter := make(chan os.Signal, 1)
 	signal.Notify(waiter, syscall.SIGINT, syscall.SIGTERM)
 
@@ -36,6 +39,7 @@ func main() {
 	case <-ctx.Done():
 	}
 
+	// clean up connection
 	kafka.KafkaClient.CleanUp()
 	cancel()
 

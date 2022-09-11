@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	// initialize
 	config.Init()
 	logger.Init()
 	redis.InitRedis()

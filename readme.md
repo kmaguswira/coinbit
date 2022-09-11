@@ -1,6 +1,7 @@
 # Coinbit
 
 This project is intended to be a test from coinbit to create a service where user can deposit money into their wallet and fetch their current balance using event-driven with golang.
+![architecture-flow](/doc/image.png)
 
 ## Installation
 This project require kafka and redis to run, but down worry, I make you a docker-compose. Just running `docker-compose up` and everything will be setup.
@@ -65,3 +66,7 @@ There are 3 layers in this project:
 ##### `insfrastructure/external_service`
 - third parties technologies stored here with interface implemented from application, it aims to make sure application running well even if we change the technologies.
 
+# Demo
+<video width="640" height="360" controls>
+  <source src="(/doc/demo.mp4" type="video/mp4">
+</video>
